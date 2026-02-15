@@ -10,7 +10,7 @@ class WeatherInformation {
         "https://api.weatherapi.com/v1/forecast.json"
         "?key=846f271cc5124a14a4b161608260302"
         "&q=$city"
-        "&days=2"
+        "&days=5"
         "&aqi=no"
         "&alerts=no";
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app/aqi_card.dart';
 import 'package:weather_app/daily_forecast.dart';
 import 'package:weather_app/hourly_forecast.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'current_weather.dart';
+import 'package:weather_app/utils/get_weather_icon_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final WeatherInformation weatherInformation = WeatherInformation();
   final TextEditingController searchController = TextEditingController();
-
 
   Map<String, dynamic>? weatherData;
   bool isLoading = true;
@@ -70,75 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return DateFormat('h a').format(dateTime);
   }
 
-
-  String getWeatherIcon(String condition, int isDay) {
-    condition = condition.toLowerCase();
-
-    if (condition.contains("sunny")) {
-      return "assets/icons/weather/sunny.svg";
-    }
-    else if (condition.contains("clear")) {
-      return "assets/icons/weather/clear_night.svg";
-    }
-    else if (condition.contains("partly cloudy")) {
-      return isDay == 1 ?
-      "assets/icons/weather/pcloudy.svg" :
-      "assets/icons/weather/partly_cloudy_0.svg";
-    }
-    else if (condition.contains("cloudy")) {
-      return isDay == 1 ?
-      "assets/icons/weather/mcloudy.svg" :
-      "assets/icons/weather/mcloudy 0.svg";
-    }
-    else if (condition.contains("overcast")) {
-      return isDay == 1 ?
-      "assets/icons/weather/mcloudy.svg" :
-      "assets/icons/weather/mcloudy 0.svg";
-    }
-    else if  (condition.contains("mist")) {
-      return isDay == 1 ?
-      "assets/icons/weather/Foggy.svg" :
-      "assets/icons/weather/foggy 0.svg";
-    }
-    else if (condition.contains("fog")){
-      return isDay == 1 ?
-      "assets/icons/weather/Foggy.svg" :
-      "assets/icons/weather/foggy 0.svg";
-    }
-    else if (condition.contains("freezing fog")){
-      return isDay == 1 ?
-      "assets/icons/weather/Foggy.svg" :
-      "assets/icons/weather/foggy 0.svg";
-    }
-    else if (condition.contains("patchy light drizzle")){
-      return isDay == 1 ?
-      "assets/icons/weather/Lrain.svg" :
-      "assets/icons/weather/Lrain 0.svg";
-    }
-    else if (condition.contains("light drizzle")){
-      return isDay == 1 ?
-      "assets/icons/weather/Lrain.svg" :
-      "assets/icons/weather/Lrain 0.svg";
-    }
-    else if (condition.contains("patchy light rain")){
-      return isDay == 1 ?
-      "assets/icons/weather/Lrain.svg" :
-      "assets/icons/weather/Lrain 0.svg";
-    }
-    else if (condition.contains("light rain")){
-      return isDay == 1 ?
-      "assets/icons/weather/Lrain.svg" :
-      "assets/icons/weather/Lrain 0.svg";
-    }
-    else if (condition.contains("moderate rain at times")){
-      return isDay == 1 ?
-      "assets/icons/weather/Lrain.svg" :
-      "assets/icons/weather/Lrain 0.svg";
-    }
-    return "assets/icons/weather/sunny.svg";
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -183,122 +115,126 @@ class _HomeScreenState extends State<HomeScreen> {
                 final hourlyForecast = getNext24Hours(weatherData!);
 
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Top Section
-                      SizedBox(
-                        height: screenHeight * 0.4,
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "${weatherData!["location"]["name"]}, ${weatherData!["location"]["country"]}",
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.05,
-                                    fontWeight: FontWeight.bold
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Top Section
+                        SizedBox(
+                          height: screenHeight * 0.4,
+                          width: double.infinity,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${weatherData!["location"]["name"]}, ${weatherData!["location"]["country"]}",
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.05,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                weatherData!["current"]["condition"]["text"],
+                                style: TextStyle(fontSize: screenWidth * 0.05),
+                              ),
+                              const SizedBox(height: 16),
+                              SvgPicture.asset(
+                                getWeatherIcon(
+                                  weatherData!["current"]["condition"]["text"],
+                                  weatherData!["current"]["is_day"],
                                 ),
+                                width: screenWidth * 0.3,
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                "$temp°",
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.1,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "Feels like $tempFeel°",
+                                style: TextStyle(fontSize: screenWidth * 0.05),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Hourly Forecast Title
+                        const SizedBox(height: 8),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Icon(Icons.access_time),
+                                SizedBox(width: 8),
+                                Text("Hourly Forecast"),
                               ],
                             ),
-                            const SizedBox(height: 16,),
-                            Text(
-                              weatherData!["current"]["condition"]["text"],
-                              style: TextStyle(fontSize: screenWidth * 0.05),
-                            ),
-                            const SizedBox(height: 16),
-                            SvgPicture.asset(
-                              getWeatherIcon(
-                                weatherData!["current"]["condition"]["text"],
-                                weatherData!["current"]["is_day"]
-                              ),
-                              width: screenWidth * 0.3,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "$temp°",
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.1,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "Feels like $tempFeel°",
-                              style: TextStyle(fontSize: screenWidth * 0.05),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Hourly Forecast Title
-                      const SizedBox(height: 8),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            children: [
-                              Icon(Icons.access_time),
-                              SizedBox(width: 8),
-                              Text("Hourly Forecast"),
-                            ],
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      // Hourly Forecast List
-                      SizedBox(
-                        height: 180,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: hourlyForecast.length,
-                          itemBuilder: (context, index) {
-                            final hour = hourlyForecast[index];
+                        // Hourly Forecast List
+                        SizedBox(
+                          height: 180,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: hourlyForecast.length,
+                            itemBuilder: (context, index) {
+                              final hour = hourlyForecast[index];
 
-                            return HourlyForecast(
-                              temp: hour["temp_c"].round(),
-                              time: formatHour(hour["time"]),
-                              iconPath: getWeatherIcon(
-                                hour["condition"]["text"],
-                                hour["is_day"],
-                              )
-                            );
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Daily Forecast Title
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            children: [
-                              Icon(Icons.calendar_month),
-                              SizedBox(width: 8),
-                              Text("Daily Forecast"),
-                            ],
+                              return HourlyForecast(
+                                temp: hour["temp_c"].round(),
+                                time: formatHour(hour["time"]),
+                                iconPath: getWeatherIcon(
+                                  hour["condition"]["text"],
+                                  hour["is_day"],
+                                ),
+                              );
+                            },
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 12),
+                        const SizedBox(height: 16),
 
-                      SizedBox(
-                        height: 250,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: const [DailyForecast()],
+                        // Daily Forecast Title
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Icon(Icons.calendar_month),
+                                SizedBox(width: 8),
+                                Text("Daily Forecast"),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+
+                        const SizedBox(height: 12),
+
+                        DailyForecast(
+                          forecastDays: weatherData!["forecast"]["forecastday"],
+                        ),
+
+                        const SizedBox(height: 16,),
+
+                        AqiCard(value: 75, maxAQI: 300)
+
+                      ],
+                    ),
                   ),
                 );
               },
