@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class AqiCard extends StatelessWidget {
   final int value;
-  final int maxAQI;
+  final int maxAqi;
 
-  const AqiCard({super.key, required this.value, required this.maxAQI});
+  const AqiCard({super.key, required this.value, required this.maxAqi});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class AqiCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          const Text(
-            "73",
+          Text(
+            value.toString(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 40,
@@ -45,9 +45,9 @@ class AqiCard extends StatelessWidget {
               final barWidth = constraints.maxWidth;
 
               // Clamp value to avoid overflow
-              final clampedValue = value.clamp(0, maxAQI);
+              final clampedValue = value.clamp(0, maxAqi);
 
-              final position = (clampedValue / maxAQI) * barWidth;
+              final position = (clampedValue / maxAqi) * barWidth;
 
               return Stack(
                 clipBehavior: Clip.none,

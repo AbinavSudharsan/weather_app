@@ -11,7 +11,7 @@ class WeatherInformation {
         "?key=846f271cc5124a14a4b161608260302"
         "&q=$city"
         "&days=5"
-        "&aqi=no"
+        "&aqi=yes"
         "&alerts=no";
 
     final response = await http.get(Uri.parse(url));

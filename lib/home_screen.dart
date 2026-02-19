@@ -111,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (_) {
                 final temp = weatherData!["current"]["temp_c"].toInt();
                 final tempFeel = weatherData!["current"]["feelslike_c"].toInt();
+                final aqiIndex = weatherData!["current"]["air_quality"]["us-epa-index"];
 
                 final hourlyForecast = getNext24Hours(weatherData!);
 
@@ -231,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         const SizedBox(height: 16,),
 
-                        AqiCard(value: 75, maxAQI: 300)
+                        AqiCard(value: aqiIndex * 50, maxAqi: 500,)
 
                       ],
                     ),
